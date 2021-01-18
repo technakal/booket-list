@@ -1,0 +1,57 @@
+{
+  "name": "booket-list",
+  "version": "1.0.0",
+  "description": "a bucket list for books",
+  "main": "index.js",
+  "scripts": {
+    "server": "json-server --watch db.json",
+    "start": "webpack serve --config webpack.config.js --progress --profile --content-base src/",
+    "dev": "npm-run-all -p server start",
+    "test": "jest",
+    "jest-init": "jest --init"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/technakal/booket-list.git"
+  },
+  "author": "N. Keener",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/technakal/booket-list/issues"
+  },
+  "homepage": "https://github.com/technakal/booket-list#readme",
+  "devDependencies": {
+    "@babel/core": "^7.12.10",
+    "@babel/preset-env": "^7.12.11",
+    "autoprefixer": "^10.2.1",
+    "babel-jest": "^26.6.3",
+    "babel-loader": "^8.2.2",
+    "css-loader": "^5.0.1",
+    "dotenv": "^8.2.0",
+    "dotenv-webpack": "^6.0.0",
+    "html-webpack-plugin": "^4.5.1",
+    "jest": "^26.6.3",
+    "json-server": "^0.16.3",
+    "npm-run-all": "^4.1.5",
+    "postcss": "^8.2.4",
+    "postcss-import": "^14.0.0",
+    "postcss-loader": "^4.1.0",
+    "prettier": "^2.2.1",
+    "style-loader": "^2.0.0",
+    "tailwindcss": "^2.0.2",
+    "webpack": "^5.13.0",
+    "webpack-cli": "^4.3.1",
+    "webpack-dev-server": "^3.11.1"
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "flyd": "^0.2.8",
+    "hyperscript-helpers": "^3.0.3",
+    "immer": "^8.0.0",
+    "luxon": "^1.25.0",
+    "ramda": "^0.27.1",
+    "spinkit": "^2.0.1",
+    "uuid": "^8.3.2",
+    "virtual-dom": "^2.1.1"
+  }
+}

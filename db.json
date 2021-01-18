@@ -1,0 +1,9 @@
+{
+  "books": [
+    {
+      "title": "The Satanic Verses",
+      "author": "Salman Rushdie",
+      "completed": false
+    }
+  ]
+}
