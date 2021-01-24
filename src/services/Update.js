@@ -7,11 +7,13 @@ import {
   title,
 } from 'helpers/props';
 import { always, concat, cond, curry, map, propEq, T } from 'ramda';
-const propTypeEq = propEq('type');
 import { INITIAL_BOOK_FORM } from 'services/State';
+import { v4 as uuid } from 'uuid';
+const propTypeEq = propEq('type');
 
 const MSGS = {
   ADD_BOOK: 'ADD_BOOK',
+  COMPLETE_BOOK: 'COMPLETE_BOOK',
   UPDATE_BOOK: 'UPDATE_BOOK',
   UPDATE_FORM: 'UPDATE_FORM',
   UPDATE_FORM_ERROR: 'UPDATE_FORM_ERROR',
@@ -20,6 +22,19 @@ const MSGS = {
 
 export const addBookMsg = () => ({
   type: MSGS.ADD_BOOK,
+});
+
+export const toggleCompleteBookMsg = id => ({
+  type: MSGS.COMPLETE_BOOK,
+  id,
+});
+
+export const updateBookMsg = ({ id, title, author, completed }) => ({
+  type: MSGS.UPDATE_BOOK,
+  id,
+  title,
+  author,
+  completed,
 });
 
 export const updateFormMsg = update => ({
@@ -48,32 +63,57 @@ const update = (msg, _m) => {
         ..._m,
         bookForm: INITIAL_BOOK_FORM,
         books: concat(books(_m), [
-          { title: title(_m), author: author(_m), completed: completed(_m) },
+          {
+            id: uuid(),
+            title: title(_m),
+            author: author(_m),
+            completed: completed(_m),
+          },
         ]),
       }),
     ],
     [
-      propTypeEq(MSGS.UPDATE_BOOK),
+      propTypeEq(MSGS.COMPLETE_BOOK),
       always({
         ..._m,
-        books: map(b =>
-          propEq('id', b.id)(msg)
-            ? {
-                ...b,
-                title: 'New Title',
-                author: 'New Author',
-                completed: true,
-              }
-            : b
+        books: map(
+          b =>
+            propEq('id', b.id)(msg)
+              ? {
+                  ...b,
+                  completed: !b.completed,
+                }
+              : b,
+          books(_m)
         ),
       }),
+    ],
+    [
+      propTypeEq(MSGS.UPDATE_BOOK),
+      () => {
+        return {
+          ..._m,
+          books: map(
+            b =>
+              propEq('id', b.id)(msg)
+                ? {
+                    ...b,
+                    title: msg.title,
+                    author: msg.author,
+                    completed: msg.completed,
+                  }
+                : b,
+            books(_m)
+          ),
+        };
+      },
     ],
     [
       propTypeEq(MSGS.UPDATE_FORM),
       always({
         ..._m,
         bookForm: {
-          ..._m.bookForm,
+          ...bookForm(_m),
           ...msg.update,
         },
       }),

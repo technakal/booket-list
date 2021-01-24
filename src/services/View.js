@@ -1,31 +1,64 @@
-import Book from 'widgets/Book';
+import { DefaultButton } from 'components/Button';
+import Bookshelf from 'containers/Bookshelf';
 import { bookForm } from 'helpers/props';
 import hh from 'hyperscript-helpers';
-import { map, pipe } from 'ramda';
-import { addBookMsg, updateFormErrorMsg, updateFormMsg } from 'services/Update';
+import { always, cond, curry, pipe, propEq, T } from 'ramda';
+import {
+  addBookMsg,
+  toggleCompleteBookMsg,
+  updateBookMsg,
+  updateFormErrorMsg,
+  updateFormMsg,
+  updatePropMsg,
+} from 'services/Update';
 import { h } from 'virtual-dom';
 import BookForm from 'widgets/BookForm';
 
 const { div, pre } = hh(h);
 
+const showForm = curry((_d, val) => pipe(updatePropMsg('viewAdd'), _d)(val));
+
 const view = (_d, model) =>
   div({ className: 'flex flex-col items-center justify-between' }, [
-    BookForm({
-      _d,
-      initialForm: model.form,
-      model: bookForm(model),
-      errors: model.bookForm.errors,
+    cond([
+      [
+        propEq('viewAdd', true),
+        always(
+          BookForm({
+            _d,
+            initialForm: model.form,
+            model: bookForm(model),
+            errors: model.bookForm.errors,
+            onerror: pipe(updateFormErrorMsg, _d),
+            oncancel: () => showForm(_d, false),
+            onvalue: pipe(updateFormMsg, _d),
+            onsubmit: pipe(addBookMsg, _d),
+          })
+        ),
+      ],
+      [
+        T,
+        always(
+          DefaultButton(
+            {
+              className: 'mb-6',
+              onclick: () => {
+                showForm(_d, true);
+              },
+            },
+            'Add Book'
+          )
+        ),
+      ],
+    ])(model),
+    Bookshelf({
+      books: model.books,
+      editId: model.editId,
       onerror: pipe(updateFormErrorMsg, _d),
-      oncancel: console.log,
-      onvalue: pipe(updateFormMsg, _d),
-      onsubmit: pipe(addBookMsg, _d),
+      onvalue: pipe(updateBookMsg, _d),
+      toggleComplete: pipe(toggleCompleteBookMsg, _d),
+      updateEditId: (key, val) => _d(updatePropMsg(key, val)),
     }),
-    div(
-      {
-        className: 'flex flex-col max-w-md w-3/6',
-      },
-      map(Book(), model.books)
-    ),
     pre({}, JSON.stringify(model, null, 2)),
   ]);
 

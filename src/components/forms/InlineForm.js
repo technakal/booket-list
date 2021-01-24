@@ -3,6 +3,8 @@ import hh from 'hyperscript-helpers';
 import { formOnChange } from 'services/form.on.change';
 import { h } from 'virtual-dom';
 const { form } = hh(h);
+import { log } from 'helpers/util';
+import { pipe, mergeRight } from 'ramda';
 
 export default (
   { _d, initialForm = {}, inputs, onerror, onvalue, onsubmit, ...props },
@@ -11,7 +13,7 @@ export default (
   const form$ = flyd.stream();
   const errors$ = flyd.stream();
 
-  flyd.on(onvalue, form$);
+  flyd.on(pipe(mergeRight(initialForm), onvalue), form$);
   flyd.on(onerror, errors$);
 
   const onblur = e => {

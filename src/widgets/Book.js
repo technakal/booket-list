@@ -3,7 +3,7 @@ import CardRow from 'components/card/CardRow';
 import InlineForm from 'components/forms/InlineForm';
 import InputGroup from 'components/forms/InputGroup';
 import Input from 'components/inputs/Input';
-import CheckboxInput from 'components/inputs/CheckboxInput';
+import CheckboxInput, { IconCheckbox } from 'components/inputs/CheckboxInput';
 import Label from 'components/Label';
 import hh from 'hyperscript-helpers';
 import { h } from 'virtual-dom';
@@ -12,16 +12,20 @@ import { cond, always, T, equals } from 'ramda';
 const { div, i, span } = hh(h);
 import { EditIcon, CancelIcon } from 'components/Icon';
 
-const Book = (className = '') => ({
+const Book = ({
   errors,
   id,
   title,
   author,
   completed,
   isEdit = false,
+  onclick,
+  oncomplete,
+  onerror,
+  onvalue,
   ...props
-}) =>
-  Card(
+}) => {
+  return Card(
     {
       className: 'mb-2',
     },
@@ -30,15 +34,23 @@ const Book = (className = '') => ({
         [
           equals(true),
           always([
-            CancelIcon({
-              className: 'cursor-pointer',
-              onclick: () => console.log('set card to view'),
-            }),
+            div(
+              {
+                className:
+                  'flex flex-row items-center justify-end text-red-500 w-full',
+              },
+              CancelIcon({
+                className: 'cursor-pointer mb-4 float-right',
+                onclick: () => onclick('editId', null),
+              })
+            ),
             InlineForm({
-              initialForm: {},
-              errors: [],
+              initialForm: { id, title, author, completed },
+              errors,
+              onerror,
+              onvalue,
               onsubmit: id => log('id')(id),
-              inputs: ({ formOnChange, form$, errors$, onblur }) => [
+              inputs: ({ formOnChange, form$, errors$, ...props }) => [
                 CardRow(
                   { className: 'flex flex-row items-center justify-between' },
                   InputGroup({
@@ -47,14 +59,13 @@ const Book = (className = '') => ({
                     defaultValue: title,
                     errors,
                     form$,
-                    id: `title-${id}`,
+                    id: 'title',
                     type: 'text',
                     required: true,
                     oninput: e => {
                       form$({ ...form$(), [e.target.id]: e.target.value });
                       errors$({ ...errors$(), ...formOnChange(e) });
                     },
-                    onblur,
                   })
                 ),
                 CardRow(
@@ -65,27 +76,26 @@ const Book = (className = '') => ({
                     defaultValue: author,
                     errors,
                     form$,
-                    id: `author-${id}`,
+                    id: `author`,
                     type: 'text',
                     required: true,
                     oninput: e => {
                       form$({ ...form$(), [e.target.id]: e.target.value });
                       errors$({ ...errors$(), ...formOnChange(e) });
                     },
-                    onblur,
                   })
                 ),
                 CardRow(
-                  { className: 'mt-3' },
-                  CheckboxInput(
+                  { className: 'mt-3 self-center' },
+                  IconCheckbox(
                     {
-                      defaultChecked: completed,
-                      id: `completed-${id}`,
+                      checked: completed,
+                      form$,
+                      id: `completed`,
                       type: 'checkbox',
-                      oninput: e => {
-                        form$({ ...form$(), [e.target.id]: e.target.value });
+                      onclick: () => {
+                        oncomplete(id);
                       },
-                      onblur,
                     },
                     'Completed'
                   )
@@ -98,17 +108,29 @@ const Book = (className = '') => ({
         [
           T,
           always([
-            EditIcon({
-              className: 'cursor-pointer',
-              onclick: () => console.log('set card to edit'),
-            }),
-            CardRow({}, span(title)),
-            CardRow({}, span(author)),
-            CardRow({}, span(completed ? 'Finished' : 'Not Finished')),
+            div(
+              { className: 'flex flex-row items-center justify-end w-full' },
+              EditIcon({
+                className: 'cursor-pointer mb-4',
+                onclick: () => onclick('editId', id),
+              })
+            ),
+            CardRow({ className: 'select-none' }, span(title)),
+            CardRow({ className: 'select-none' }, span(author)),
+            CardRow(
+              { className: 'mt-3' },
+              IconCheckbox({
+                checked: completed,
+                id: `completed-${id}`,
+                type: 'checkbox',
+                onclick: e => oncomplete(id),
+              })
+            ),
           ]),
         ],
       ])(isEdit),
     ]
   );
+};
 
 export default Book;
