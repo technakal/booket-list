@@ -6,6 +6,8 @@ export const INITIAL_BOOK_FORM = {
 };
 
 export const initModel = {
+  apiError: null,
+  bookForm: INITIAL_BOOK_FORM,
   books: [
     {
       title: 'The Satanic Verses',
@@ -23,6 +25,6 @@ export const initModel = {
       completed: false,
     },
   ],
-  bookForm: INITIAL_BOOK_FORM,
-  apiError: null,
+  editId: null,
+  isLoading: false,
 };

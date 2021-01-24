@@ -5,7 +5,6 @@ import { isNil, not, pipe, prop, trim, identity } from 'ramda';
 import { formOnChange } from 'services/form.on.change';
 import { h } from 'virtual-dom';
 const { div, form } = hh(h);
-import { log } from 'helpers/util';
 
 const FormButtons = ({
   className = '',
@@ -31,7 +30,7 @@ const FormButtons = ({
     ),
   ]);
 
-export default (
+const Form = (
   {
     cancelProps,
     _d,
@@ -77,7 +76,7 @@ export default (
       props,
     },
     [
-      inputs(formOnChange, form$, errors$),
+      inputs({ formOnChange, form$, errors$ }),
       children,
       FormButtons({
         className: 'mt-4',
@@ -90,3 +89,5 @@ export default (
     ]
   );
 };
+
+export default Form;

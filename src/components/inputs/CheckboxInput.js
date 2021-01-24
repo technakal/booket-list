@@ -13,5 +13,5 @@ export default ({ id, ...props }, children) =>
       type: 'checkbox',
       ...props,
     }),
-    Label(children, { className: 'ml-4 select-none', id }),
+    Label(children, { className: 'ml-4 select-none text-base', id }),
   ]);

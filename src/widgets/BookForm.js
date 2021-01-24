@@ -16,7 +16,7 @@ export default ({ initialForm, errors, model, oncancel, onsubmit, ...props }) =>
       onclick: oncancel,
       label: 'Cancel',
     },
-    inputs: (formOnChange, form$, errors$) => [
+    inputs: ({ formOnChange, form$, errors$, ...props }) => [
       InputGroup({
         label: Label('Title'),
         component: Input,

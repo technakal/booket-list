@@ -6,7 +6,7 @@ import {
   completed,
   title,
 } from 'helpers/props';
-import { always, concat, cond, map, propEq, T } from 'ramda';
+import { always, concat, cond, curry, map, propEq, T } from 'ramda';
 const propTypeEq = propEq('type');
 import { INITIAL_BOOK_FORM } from 'services/State';
 
@@ -31,6 +31,13 @@ export const updateFormErrorMsg = value => ({
   type: MSGS.UPDATE_FORM_ERROR,
   value,
 });
+
+export const updatePropMsg = curry((key, value) => ({
+  type: MSGS.UPDATE_PROP,
+  update: { [key]: value },
+}));
+
+export const updateLoadingMsg = updatePropMsg('isLoading');
 
 const update = (msg, _m) => {
   console.log(msg);
@@ -84,7 +91,7 @@ const update = (msg, _m) => {
         },
       }),
     ],
-    [propTypeEq(MSGS.UPDATE_PROP), always({ ..._m, apiError: 'Test error' })],
+    [propTypeEq(MSGS.UPDATE_PROP), always({ ..._m, ...msg.update })],
     [T, always(_m)],
   ])(msg);
 };
