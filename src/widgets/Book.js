@@ -2,15 +2,61 @@ import Card from 'components/card/Card';
 import CardRow from 'components/card/CardRow';
 import InlineForm from 'components/forms/InlineForm';
 import InputGroup from 'components/forms/InputGroup';
+import { CancelIcon, EditIcon, TrashIcon } from 'components/Icon';
+import { IconCheckboxWithLabel } from 'components/inputs/CheckboxInput';
 import Input from 'components/inputs/Input';
-import CheckboxInput, { IconCheckbox } from 'components/inputs/CheckboxInput';
 import Label from 'components/Label';
-import hh from 'hyperscript-helpers';
-import { h } from 'virtual-dom';
 import { log } from 'helpers/util';
-import { cond, always, T, equals } from 'ramda';
-const { div, i, span } = hh(h);
-import { EditIcon, CancelIcon } from 'components/Icon';
+import hh from 'hyperscript-helpers';
+import { always, cond, equals, T, trim } from 'ramda';
+import { h } from 'virtual-dom';
+
+const { div, span } = hh(h);
+
+const BookControls = ({
+  className = '',
+  id,
+  isEdit,
+  onedit,
+  ondelete,
+  ...props
+}) =>
+  div(
+    {
+      className: trim(
+        `flex flex-row items-center justify-between w-full ${className}`
+      ),
+    },
+    [
+      TrashIcon({
+        label: 'Delete Book',
+        className: 'cursor-pointer mb-4 text-red-500',
+        onclick: () => ondelete(id),
+      }),
+      cond([
+        [
+          equals(true),
+          always(
+            CancelIcon({
+              label: 'Stop Editing Book',
+              className: 'cursor-pointer mb-4 text-red-500',
+              onclick: () => onedit('editId', null),
+            })
+          ),
+        ],
+        [
+          T,
+          always(
+            EditIcon({
+              label: 'Edit Book Details',
+              className: 'cursor-pointer mb-4',
+              onclick: () => onedit('editId', id),
+            })
+          ),
+        ],
+      ])(isEdit),
+    ]
+  );
 
 const Book = ({
   errors,
@@ -19,31 +65,29 @@ const Book = ({
   author,
   completed,
   isEdit = false,
-  onclick,
   oncomplete,
+  ondelete,
+  onedit,
   onerror,
   onvalue,
   ...props
 }) => {
   return Card(
     {
-      className: 'mb-2',
+      className: 'bg-white flex flex-col max-w-md mb-2 w-96',
     },
     [
+      BookControls({
+        className: 'justify-self-start',
+        id,
+        isEdit,
+        ondelete,
+        onedit,
+      }),
       cond([
         [
           equals(true),
-          always([
-            div(
-              {
-                className:
-                  'flex flex-row items-center justify-end text-red-500 w-full',
-              },
-              CancelIcon({
-                className: 'cursor-pointer mb-4 float-right',
-                onclick: () => onclick('editId', null),
-              })
-            ),
+          always(
             InlineForm({
               initialForm: { id, title, author, completed },
               errors,
@@ -60,9 +104,10 @@ const Book = ({
                     errors,
                     form$,
                     id: 'title',
+                    inline: true,
                     type: 'text',
                     required: true,
-                    oninput: e => {
+                    onblur: e => {
                       form$({ ...form$(), [e.target.id]: e.target.value });
                       errors$({ ...errors$(), ...formOnChange(e) });
                     },
@@ -77,53 +122,55 @@ const Book = ({
                     errors,
                     form$,
                     id: `author`,
+                    inline: true,
                     type: 'text',
                     required: true,
-                    oninput: e => {
+                    onblur: e => {
                       form$({ ...form$(), [e.target.id]: e.target.value });
                       errors$({ ...errors$(), ...formOnChange(e) });
                     },
                   })
                 ),
                 CardRow(
-                  { className: 'mt-3 self-center' },
-                  IconCheckbox(
-                    {
-                      checked: completed,
-                      form$,
-                      id: `completed`,
-                      type: 'checkbox',
-                      onclick: () => {
-                        oncomplete(id);
-                      },
+                  { className: 'flex flex-row items-center mt-3 self-center' },
+                  IconCheckboxWithLabel({
+                    checked: completed,
+                    checkedLabel: 'Read',
+                    uncheckedLabel: 'Unread',
+                    label: `Mark Book as ${completed ? 'Unread' : 'Read'}`,
+                    form$,
+                    id: `completed`,
+                    type: 'checkbox',
+                    onclick: () => {
+                      oncomplete(id);
                     },
-                    'Completed'
-                  )
+                  })
                 ),
               ],
               ...props,
-            }),
-          ]),
+            })
+          ),
         ],
         [
           T,
           always([
-            div(
-              { className: 'flex flex-row items-center justify-end w-full' },
-              EditIcon({
-                className: 'cursor-pointer mb-4',
-                onclick: () => onclick('editId', id),
-              })
+            CardRow(
+              { className: 'select-none' },
+              span({ className: 'font-bold' }, title)
             ),
-            CardRow({ className: 'select-none' }, span(title)),
             CardRow({ className: 'select-none' }, span(author)),
             CardRow(
-              { className: 'mt-3' },
-              IconCheckbox({
+              { className: 'flex flex-row items-center mt-3' },
+              IconCheckboxWithLabel({
                 checked: completed,
-                id: `completed-${id}`,
+                checkedLabel: 'Read',
+                uncheckedLabel: 'Unread',
+                label: `Mark Book as ${completed ? 'Unread' : 'Read'}`,
+                id: `completed`,
                 type: 'checkbox',
-                onclick: e => oncomplete(id),
+                onclick: () => {
+                  oncomplete(id);
+                },
               })
             ),
           ]),

@@ -1,7 +1,7 @@
 import { CancelButton, DefaultButton, SubmitButton } from 'components/Button';
 import flyd from 'flyd';
 import hh from 'hyperscript-helpers';
-import { isNil, not, pipe, prop, trim, identity } from 'ramda';
+import { isNil, not, pipe, prop, trim } from 'ramda';
 import { formOnChange } from 'services/form.on.change';
 import { h } from 'virtual-dom';
 const { div, form } = hh(h);

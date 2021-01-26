@@ -1,8 +1,63 @@
 {
   "books": [
     {
+      "id": "c72abd75-2b35-4df5-83fa-53240a8a62e3",
       "title": "The Satanic Verses",
       "author": "Salman Rushdie",
+      "completed": false
+    },
+    {
+      "id": "88a42506-152b-4ca3-8e60-a7eab8c67cce",
+      "title": "The Revolt of Angels",
+      "author": "Anatole France",
+      "completed": false
+    },
+    {
+      "id": "2aad6fea-c179-449f-9de0-30563e2c975c",
+      "title": "Paradise Lost",
+      "author": "John Milton",
+      "completed": false
+    },
+    {
+      "id": "046e8b7e-93ba-49cd-8dec-c7b205677f7a",
+      "title": "Satanic Feminism",
+      "author": "Per Faxneld",
+      "completed": false
+    },
+    {
+      "id": "95ed05ea-f50d-4be0-bb13-a53c5cf352dc",
+      "title": "Lords of the Left-Hand Path",
+      "author": "Stephen E. Flowers",
+      "completed": false
+    },
+    {
+      "id": "0de0722e-e3b6-4f08-a21e-b52ab44ceb11",
+      "title": "Children of Lucifer",
+      "author": "Ruben van Luijk",
+      "completed": false
+    },
+    {
+      "id": "12fbcd4b-b34a-47fd-9c56-90d9031683fc",
+      "title": "The Satanic Epic",
+      "author": "Neil Forsyth",
+      "completed": false
+    },
+    {
+      "id": "4592d0c3-a6ee-444b-9f3b-a1d5c026ea14",
+      "title": "Evil Be My Good",
+      "author": "Deckler Murray",
+      "completed": false
+    },
+    {
+      "id": "6cd47cd1-6802-44e9-b198-eaa54d64bae8",
+      "title": "The Invention of Satanism",
+      "author": "Asbjorn Dyrendal, James R. Lewis",
+      "completed": false
+    },
+    {
+      "id": "7950c830-d13c-46e5-8352-2edfd6deadee",
+      "title": "House of Leaves",
+      "author": "Mark Z. Danielewski",
       "completed": false
     }
   ]

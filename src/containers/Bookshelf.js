@@ -1,11 +1,12 @@
 import hh from 'hyperscript-helpers';
+import { equals, map } from 'ramda';
 import { h } from 'virtual-dom';
 import Book from 'widgets/Book';
-import { equals, map } from 'ramda';
-const { div, p } = hh(h);
+const { div } = hh(h);
 
 export default ({
   books,
+  deleteBook,
   editId,
   onerror,
   onvalue,
@@ -15,16 +16,17 @@ export default ({
 }) => {
   return div(
     {
-      className: 'flex flex-col max-w-md w-3/6',
+      className: 'gap-3 grid grid-cols-1 lg:grid-cols-3',
     },
     map(
       b =>
         Book({
-          onclick: updateEditId,
+          isEdit: equals(editId, b.id),
+          onedit: updateEditId,
           oncomplete: toggleComplete,
+          ondelete: deleteBook,
           onerror,
           onvalue,
-          isEdit: equals(editId, b.id),
           ...b,
         }),
       books

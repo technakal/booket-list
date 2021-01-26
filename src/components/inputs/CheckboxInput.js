@@ -5,7 +5,7 @@ import { always, cond, propEq, T } from 'ramda';
 import { h } from 'virtual-dom';
 import Input from './Input';
 
-const { div } = hh(h);
+const { div, span } = hh(h);
 
 export const IconCheckbox = props =>
   cond([
@@ -15,6 +15,26 @@ export const IconCheckbox = props =>
     ],
     [T, always(CircleIcon({ className: 'text-gray-400', ...props }))],
   ])(props);
+
+export const IconCheckboxWithLabel = ({
+  checked,
+  checkedLabel,
+  id,
+  onclick,
+  uncheckedLabel,
+  ...props
+}) => [
+  IconCheckbox({ onclick, checked, props }),
+  span(
+    {
+      className: `cursor-pointer ml-2 ${
+        checked ? 'text-green-600' : 'text-gray-400'
+      }`,
+      onclick,
+    },
+    checked ? checkedLabel : uncheckedLabel
+  ),
+];
 
 export default ({ id, ...props }, children) =>
   div({ className: 'flex content-center' }, [

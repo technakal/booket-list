@@ -1,13 +1,7 @@
 import hh from 'hyperscript-helpers';
-import { trim } from 'ramda';
 import { h } from 'virtual-dom';
-
+import { trim } from 'ramda';
 const { div } = hh(h);
 
 export default ({ className = '' }, children) =>
-  div(
-    {
-      className: trim(`text-xl font-medium text-black ${className}`),
-    },
-    children
-  );
+  div({ className: trim(`${className}`) }, children);
